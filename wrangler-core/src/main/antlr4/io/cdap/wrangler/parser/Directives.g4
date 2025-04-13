@@ -18,6 +18,11 @@ grammar Directives;
 
 options {
   language = Java;
+  
+}
+
+@parser::header {
+package io.cdap.wrangler.parser;
 }
 
 @lexer::header {
@@ -64,6 +69,8 @@ directive
     | stringList
     | numberRanges
     | properties
+    | byteSizeArg
+    | timeDurationArg
   )*?
   ;
 
@@ -128,7 +135,7 @@ propertyList
  ;
 
 property
- : Identifier '=' ( text | number | bool )
+ : Identifier '=' ( text | number | bool | byteSizeArg | timeDurationArg )
  ;
 
 numberRanges
@@ -140,7 +147,15 @@ numberRange
  ;
 
 value
- : String | Number | Column | Bool
+ : String | Number | Column | Bool | BYTE_SIZE | TIME_DURATION
+ ;
+
+byteSizeArg
+ : BYTE_SIZE
+ ;
+
+timeDurationArg
+ : TIME_DURATION
  ;
 
 ecommand
@@ -255,6 +270,32 @@ Bool
 
 Number
  : Int ('.' Digit*)?
+ ;
+
+// Byte size units (case insensitive)
+BYTE_SIZE
+ : Number BYTE_UNIT
+ ;
+
+fragment BYTE_UNIT
+ : [kK][bB]
+ | [mM][bB]
+ | [gG][bB]
+ | [tT][bB]
+ | [bB]
+ ;
+
+// Time duration units (case insensitive)
+TIME_DURATION
+ : Number TIME_UNIT
+ ;
+
+fragment TIME_UNIT
+ : [mM][sS]
+ | [sS]
+ | [mM]
+ | [hH]
+ | [dD]
  ;
 
 Identifier
