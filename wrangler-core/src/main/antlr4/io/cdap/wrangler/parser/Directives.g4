@@ -36,8 +36,8 @@ package io.cdap.wrangler.parser;
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
  */
@@ -51,7 +51,7 @@ recipe
  ;
 
 statements
- :  ( Comment | macro | directive ';' | pragma ';' | ifStatement)*
+ :  ( Comment | macro | directive ';' | pragma ';' | ifStatement)* 
  ;
 
 directive
@@ -69,30 +69,28 @@ directive
     | stringList
     | numberRanges
     | properties
-    | byteSizeArg
-    | timeDurationArg
   )*?
   ;
 
 ifStatement
-  : ifStat elseIfStat* elseStat? '}'
-  ;
+ : ifStat elseIfStat* elseStat? '}'
+ ;
 
 ifStat
-  : 'if' expression '{' statements
-  ;
+ : 'if' expression '{' statements
+ ;
 
 elseIfStat
-  : '}' 'else' 'if' expression '{' statements
-  ;
+ : '}' 'else' 'if' expression '{' statements
+ ;
 
 elseStat
-  : '}' 'else' '{' statements
-  ;
+ : '}' 'else' '{' statements
+ ;
 
 expression
-  : '(' (~'(' | expression)* ')'
-  ;
+ : '(' (~'(' | expression)* ')'
+ ;
 
 forStatement
  : 'for' '(' Identifier '=' expression ';' expression ';' expression ')' '{'  statements '}'
@@ -147,15 +145,7 @@ numberRange
  ;
 
 value
- : String | Number | Column | Bool | BYTE_SIZE | TIME_DURATION
- ;
-
-byteSizeArg
- : BYTE_SIZE
- ;
-
-timeDurationArg
- : TIME_DURATION
+ : String | Number | Column | Bool
  ;
 
 ecommand
@@ -210,7 +200,6 @@ identifierList
  : Identifier (',' Identifier)*
  ;
 
-
 /*
  * Following are the Lexer Rules used for tokenizing the recipe.
  */
@@ -230,7 +219,7 @@ StartsWith : '=^';
 NotStartsWith : '!^';
 EndsWith : '=$';
 NotEndsWith : '!$';
-PlusEqual : '+=';
+PlusEqual : '+='; 
 SubEqual : '-=';
 MulEqual : '*=';
 DivEqual : '/=';
@@ -261,7 +250,6 @@ Pipe     : '|';
 BackSlash: '\\';
 Dollar   : '$';
 Tilde    : '~';
-
 
 Bool
  : 'true'
@@ -311,8 +299,8 @@ Column
  ;
 
 String
- : '\'' ( EscapeSequence | ~('\'') )* '\''
- | '"'  ( EscapeSequence | ~('"') )* '"'
+ : '\'' ( EscapeSequence | ~('\''))* '\''
+ | '"'  ( EscapeSequence | ~('"'))* '"'
  ;
 
 EscapeSequence
@@ -334,7 +322,7 @@ UnicodeEscape
    ;
 
 fragment
-   HexDigit : ('0'..'9'|'a'..'f'|'A'..'F') ;
+HexDigit : ('0'..'9'|'a'..'f'|'A'..'F') ;
 
 Comment
  : ('//' ~[\r\n]* | '/*' .*? '*/' | '--' ~[\r\n]* ) -> skip

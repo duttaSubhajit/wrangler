@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * Copyright © 2017-2019 Cask Data, Inc.
  *
@@ -25,10 +26,26 @@ import io.cdap.wrangler.api.annotations.PublicEvolving;
  */
 @PublicEvolving
 public class TimeDuration implements Token {
+=======
+package io.cdap.wrangler.api.parser;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * Represents a time duration token like 150ms, 5s, 2m, etc.
+ */
+public class TimeDuration implements Token {
+  private static final Pattern PATTERN = Pattern.compile("(?i)(\\d+)(ms|s|m|h)");
+>>>>>>> 4ce7097ca8008f60b27e01c9c52d9a50cc025319
   private final long milliseconds;
   private final String original;
 
   public TimeDuration(String value) {
+<<<<<<< HEAD
     this.original = value.trim();
     this.milliseconds = parseTimeDuration(this.original);
   }
@@ -54,6 +71,37 @@ public class TimeDuration implements Token {
         throw new IllegalArgumentException(
             String.format("Invalid time unit '%s'. Supported units are ms, s, m, h, d.", unitStr));
     }
+=======
+    this.original = value.trim().toLowerCase();
+    Matcher matcher = PATTERN.matcher(this.original);
+    if (!matcher.matches()) {
+      throw new IllegalArgumentException("Invalid time duration format: " + value);
+    }
+
+    long number = Long.parseLong(matcher.group(1));
+    String unit = matcher.group(2);
+
+    switch (unit) {
+      case "ms":
+        this.milliseconds = number;
+        break;
+      case "s":
+        this.milliseconds = number * 1000;
+        break;
+      case "m":
+        this.milliseconds = number * 60 * 1000;
+        break;
+      case "h":
+        this.milliseconds = number * 60 * 60 * 1000;
+        break;
+      default:
+        throw new IllegalArgumentException("Unknown unit: " + unit);
+    }
+  }
+
+  public long getMilliseconds() {
+    return milliseconds;
+>>>>>>> 4ce7097ca8008f60b27e01c9c52d9a50cc025319
   }
 
   @Override
@@ -68,6 +116,7 @@ public class TimeDuration implements Token {
 
   @Override
   public JsonElement toJson() {
+<<<<<<< HEAD
     JsonObject object = new JsonObject();
     object.addProperty("type", type().name());
     object.addProperty("value", milliseconds);
@@ -83,3 +132,12 @@ public class TimeDuration implements Token {
     return milliseconds / 1000;
   }
 }
+=======
+    JsonObject obj = new JsonObject();
+    obj.addProperty("type", "TIME_DURATION");
+    obj.addProperty("value", original);
+    obj.addProperty("milliseconds", milliseconds);
+    return obj;
+  }
+}
+>>>>>>> 4ce7097ca8008f60b27e01c9c52d9a50cc025319
